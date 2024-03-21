@@ -1,0 +1,3 @@
+Movie{name='Interstellar', duration=185, rating=4.5, airingTime='9:00PM', Theatre Room Number: 0}
+Movie{name='Batman', duration=185, rating=4.7, airingTime='5:00PM', Theatre Room Number: 1}
+Movie{name='The Flash', duration=185, rating=2.8, airingTime='7:00PM', Theatre Room Number: 2}
