@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+//Class for testing read/write methods for ticket objects in arraylist
 public class MovieDriver {
     public static void main(String[] args) {
         String newFile = "readFiles.txt";
