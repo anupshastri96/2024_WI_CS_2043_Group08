@@ -1,3 +1,7 @@
+
+/** 
+ * *****OLD VERSION OF MOVIE.JAVA******
+*/
 import java.io.*;
 
 public class Movie implements Serializable {
