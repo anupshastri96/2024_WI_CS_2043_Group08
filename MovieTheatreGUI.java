@@ -1,5 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 public class MovieTheatreGUI extends JFrame{
     private JButton[] movieButtons;
@@ -17,6 +27,8 @@ public class MovieTheatreGUI extends JFrame{
     private double selectedPrice = 0.0;
     private int selectedMovieIndex = -1;
     private int selectedAgeIndex = -1;
+    private String seatFile = "stateOfSeats.txt";
+
     public MovieTheatreGUI(){
         setTitle("Movie Theatre");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -101,6 +113,81 @@ public class MovieTheatreGUI extends JFrame{
         if (choice == JOptionPane.YES_OPTION) {
             JOptionPane.showMessageDialog(this, "Booking canceled!");
         }
+    }
+    private void seatSelected(int row, int col) {
+        JOptionPane.showMessageDialog(this,
+                "You have selected Seat " + (row * 4 + col + 1) + ". Price: $" + selectedPrice);
+    }
+
+    private void confirmBooking() {
+        JOptionPane.showMessageDialog(this, "Booking confirmed!");
+    }
+
+    private void cancelBooking() {
+        int choice = JOptionPane.showConfirmDialog(this, "Are you sure you want to cancel the booking?",
+                "Cancel Booking", JOptionPane.YES_NO_OPTION);
+        if (choice == JOptionPane.YES_OPTION) {
+            JOptionPane.showMessageDialog(this, "Booking canceled!");
+        }
+    }
+
+    private void saveSeats() {
+        try {
+            BufferedWriter saveSeatInfo = new BufferedWriter(new FileWriter(seatFile));
+            for (JButton b : seats) {
+                if (b.getBackground().equals(Color.BLUE)) {
+                    saveSeatInfo.write("[O]");
+                    saveSeatInfo.write("\n");
+                }
+
+                else {
+                    saveSeatInfo.write("[V]");
+                    saveSeatInfo.write("\n");
+                }
+            }
+
+            saveSeatInfo.flush();
+            saveSeatInfo.close();
+        } catch (Exception e) {
+
+        }
+    }
+
+    private void restoreSeats() {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(seatFile));
+            String line;
+            int i = 0;
+            while ((line = br.readLine()) != null && i < seats.length) {
+
+                if (line.equals("[O]")) {
+                    seats[i].setBackground(Color.BLUE);
+                }
+                if (line.equals("[V]")) {
+                    seats[i].setBackground(null);
+                }
+                i++;
+            }
+            br.close();
+
+        } catch (Exception e) {
+
+        }
+    }
+
+    private static void writeTicket(ArrayList<Ticket> tickets) {
+        try {
+            ObjectOutputStream bw = new ObjectOutputStream(new FileOutputStream("ticketFile.txt"));
+            bw.writeObject(tickets);
+        } catch (Exception e) {
+        }
+    }
+
+    public static ArrayList<Ticket> readListFromFile(String file) throws IOException, ClassNotFoundException {
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+        ArrayList<Ticket> ticketList = (ArrayList<Ticket>) ois.readObject();
+        ois.close();
+        return ticketList;
     }
 
     public static void main(String[] args){
