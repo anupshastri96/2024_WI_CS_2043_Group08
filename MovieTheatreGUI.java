@@ -115,16 +115,16 @@ public class MovieTheatreGUI extends JFrame{
             JOptionPane.showMessageDialog(this, "Booking canceled!");
         }
     }
-    private void seatSelected(int row, int col) {
+    private void seatSelect(int row, int col) {
         JOptionPane.showMessageDialog(this,
                 "You have selected Seat " + (row * 4 + col + 1) + ". Price: $" + selectedPrice);
     }
 
-    private void confirmBooking() {
+    private void confirmBook() {
         JOptionPane.showMessageDialog(this, "Booking confirmed!");
     }
 
-    private void cancelBooking() {
+    private void cancelBook() {
         int choice = JOptionPane.showConfirmDialog(this, "Are you sure you want to cancel the booking?",
                 "Cancel Booking", JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
@@ -135,8 +135,9 @@ public class MovieTheatreGUI extends JFrame{
     private void saveSeats() {
         try {
             BufferedWriter saveSeatInfo = new BufferedWriter(new FileWriter(seatFile));
-            for (JButton b : seats) {
-                if (b.getBackground().equals(Color.RED)) {
+            for (int i = 0; i < seats.length; i++) {
+				for(int j = 0; j < seats[i].length; j++){
+                if (seats[i][j].getBackground().equals(Color.RED)) {
                     saveSeatInfo.write("[O]");
                     saveSeatInfo.write("\n");
                 }
@@ -145,6 +146,7 @@ public class MovieTheatreGUI extends JFrame{
                     saveSeatInfo.write("[V]");
                     saveSeatInfo.write("\n");
                 }
+				}
             }
 
             saveSeatInfo.flush();
@@ -158,16 +160,18 @@ public class MovieTheatreGUI extends JFrame{
         try {
             BufferedReader br = new BufferedReader(new FileReader(seatFile));
             String line;
-            int i = 0;
-            while ((line = br.readLine()) != null && i < seats.length) {
+				for (int i = 0; i < seats.length; i++) {
+				for(int j = 0; j < seats[i].length; j++){
+					while ((line = br.readLine()) != null && i < seats.length) {
 
-                if (line.equals("[O]")) {
-                    seats[i].setBackground(Color.RED);
+					if (line.equals("[O]")) {
+						seats[i][j].setBackground(Color.RED);
+					}
+					if (line.equals("[V]")) {
+						seats[i][j].setBackground(null);
+					}
                 }
-                if (line.equals("[V]")) {
-                    seats[i].setBackground(null);
-                }
-                i++;
+				}
             }
             br.close();
 
@@ -176,6 +180,7 @@ public class MovieTheatreGUI extends JFrame{
         }
     }
 
+	/*
     private static void writeTicket(ArrayList<Ticket> tickets) {
         try {
             ObjectOutputStream bw = new ObjectOutputStream(new FileOutputStream("ticketFile.txt"));
@@ -214,7 +219,7 @@ public class MovieTheatreGUI extends JFrame{
         scanner.close(); // closes the scanner
         return movies;
     }
-
+	*/
     public static void main(String[] args){
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){ 
