@@ -1,27 +1,24 @@
 
-/** 
- * *****OLD VERSION OF MOVIE.JAVA******
-*/
 import java.io.*;
 
-public class Movie implements Serializable {
+public class Movie implements Serializable, Comparable<Movie> {
     private String name;
-    private int duration;
+    private String duration;
     private double rating;
     private String airingTime;
 
-    public Movie(String name, int duration, double rating, String airingTime) {
+    public Movie(String name, String airingTime, String duration, double rating) {
         this.name = name;
+        this.airingTime = airingTime;
         this.duration = duration;
         this.rating = rating;
-        this.airingTime = airingTime;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getDuration() {
+    public String getDuration() {
         return duration;
     }
 
@@ -43,8 +40,16 @@ public class Movie implements Serializable {
                 '}';
     }
 
-    public static void main(String[] args) {
-        Movie myMovie = new Movie("Interstellar", 169, 4, "09:00 PM");
-        System.out.println(myMovie.toString());
+    // CompareTo method to compare movies based on their rating
+    @Override
+    public int compareTo(Movie other) {
+        return Double.compare(this.rating, other.rating);
     }
+
+    /*
+     * public static void main(String[] args) {
+     * Movie myMovie = new Movie("Interstellar", 169, 4, "09:00 PM");
+     * System.out.println(myMovie.toString());
+     * }
+     */
 }
