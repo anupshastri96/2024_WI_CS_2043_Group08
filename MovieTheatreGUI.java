@@ -183,11 +183,35 @@ public class MovieTheatreGUI extends JFrame{
         }
     }
 
-    public static ArrayList<Ticket> readListFromFile(String file) throws IOException, ClassNotFoundException {
+    public static ArrayList<Ticket> readTicketFromFile(String file) throws IOException, ClassNotFoundException {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
         ArrayList<Ticket> ticketList = (ArrayList<Ticket>) ois.readObject();
         ois.close();
         return ticketList;
+    }
+    
+    public static ArrayList<Movie> readMoviesFromFile(String filePath) throws FileNotFoundException {
+        ArrayList<Movie> movies = new ArrayList<>();
+        Scanner scanner = new Scanner(new File(filePath));
+
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            String[] details = line.split(",");
+
+            if (details.length == 4) { // Check if the split line has exactly four elements: name, duration, airtime,
+                                       // and rating
+                String name = details[0];// Extract the movie name from the first element
+                String duration = details[1];// Extract the movie duration from the second element
+                String airtime = details[2];// Extract the movie airtime from the third element.
+                double rating = Double.parseDouble(details[3]);// Convert the fourth element from String to double for
+                                                               // the rating
+                movies.add(new Movie(name, airtime, duration, rating)); // Create a new Movie object and add it to the
+                                                                        // list.
+            }
+        }
+
+        scanner.close(); // closes the scanner
+        return movies;
     }
 
     public static void main(String[] args){
