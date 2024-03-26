@@ -136,7 +136,7 @@ public class MovieTheatreGUI extends JFrame{
         try {
             BufferedWriter saveSeatInfo = new BufferedWriter(new FileWriter(seatFile));
             for (JButton b : seats) {
-                if (b.getBackground().equals(Color.BLUE)) {
+                if (b.getBackground().equals(Color.RED)) {
                     saveSeatInfo.write("[O]");
                     saveSeatInfo.write("\n");
                 }
@@ -162,7 +162,7 @@ public class MovieTheatreGUI extends JFrame{
             while ((line = br.readLine()) != null && i < seats.length) {
 
                 if (line.equals("[O]")) {
-                    seats[i].setBackground(Color.BLUE);
+                    seats[i].setBackground(Color.RED);
                 }
                 if (line.equals("[V]")) {
                     seats[i].setBackground(null);
