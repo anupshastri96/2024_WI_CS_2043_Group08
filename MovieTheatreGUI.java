@@ -21,9 +21,9 @@ public class MovieTheatreGUI extends JFrame{
     private String[] movies = {"Movie 1", "Movie 2", "Movie 3"};
     private String[] ages = {"Senior", "Child", "Adult"};
     private double[][] prices = 
-           {{10.0, 8.0, 12.0},
-            {9.0, 7.0, 11.0},
-            {11.0, 9.0, 13.0}};
+           {{10.0, 9.0, 13.0},
+            {10.0, 9.0, 13.0},
+            {10.0, 9.0, 13.0}};
     private double selectedPrice = 0.0;
     private int selectedMovieIndex = -1;
     private int selectedAgeIndex = -1;
