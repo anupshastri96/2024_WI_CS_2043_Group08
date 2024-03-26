@@ -89,6 +89,7 @@ public class MovieTheatreGUI extends JFrame{
     }
 
     private void seatSelected(int row, int col){
+        seats[row][col].setBackground(Color.RED);
         JOptionPane.showMessageDialog(this, "You have selected Seat " + (row * 4 + col + 1) + ". Price: $" + selectedPrice);
     }
 
