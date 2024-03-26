@@ -105,16 +105,38 @@ public class MovieTheatreGUI extends JFrame{
         JOptionPane.showMessageDialog(this, "You have selected Seat " + (row * 4 + col + 1) + ". Price: $" + selectedPrice);
     }
 
-    private void confirmBooking(){
-        JOptionPane.showMessageDialog(this, "Booking confirmed!");
-    }
-
-    private void cancelBooking(){
-        int choice = JOptionPane.showConfirmDialog(this, "Are you sure you want to cancel the booking?", "Cancel Booking", JOptionPane.YES_NO_OPTION);
-        if (choice == JOptionPane.YES_OPTION) {
-            JOptionPane.showMessageDialog(this, "Booking canceled!");
+    private void confirmBooking() {
+        boolean seatSelected = false;
+        for (int i = 0; i < seats.length; i++) {
+            for (int j = 0; j < seats[i].length; j++) {
+                if (seats[i][j].getBackground() == Color.RED) {
+                    seatSelected = true;
+                    break;
+                }
+            }
+        }
+        
+        if (seatSelected) {
+            JOptionPane.showMessageDialog(this, "Booking confirmed!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a seat before confirming the booking.");
         }
     }
+    
+
+    private void cancelBooking() {
+        int choice = JOptionPane.showConfirmDialog(this, "Are you sure you want to cancel the booking?", "Cancel Booking", JOptionPane.YES_NO_OPTION);
+        if (choice == JOptionPane.YES_OPTION) {
+            for (int i = 0; i < seats.length; i++) {
+                for (int j = 0; j < seats[i].length; j++) {
+                    if (seats[i][j].getBackground() == Color.RED) {
+                        seats[i][j].setBackground(null);
+                    }
+                }
+            }
+            JOptionPane.showMessageDialog(this, "Booking canceled!");
+        }
+    }    
     private void seatSelect(int row, int col) {
         JOptionPane.showMessageDialog(this,
                 "You have selected Seat " + (row * 4 + col + 1) + ". Price: $" + selectedPrice);
