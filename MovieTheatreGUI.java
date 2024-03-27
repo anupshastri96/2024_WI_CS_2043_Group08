@@ -47,7 +47,7 @@ public class MovieTheatreGUI extends JFrame {
             movieList = readMoviesFromFile(moviesFile);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            movieList = new ArrayList<>(); // incase file is not found, fall back to empty list
+            movieList = new ArrayList<>(); // Incase Arraylist is empty
         }
 
         // Convert the movieList into an array of movie names
@@ -229,16 +229,14 @@ public class MovieTheatreGUI extends JFrame {
         }
     }
 
-    /*
-     * private static void writeTicket(ArrayList<Ticket> tickets) {
-     * try {
-     * ObjectOutputStream bw = new ObjectOutputStream(new
-     * FileOutputStream("ticketFile.txt"));
-     * bw.writeObject(tickets);
-     * } catch (Exception e) {
-     * }
-     * }
-     */
+    private static void writeTicket(ArrayList<Ticket> tickets) {
+        try {
+            ObjectOutputStream bw = new ObjectOutputStream(new FileOutputStream("ticketFile.txt"));
+            bw.writeObject(tickets);
+        } catch (Exception e) {
+        }
+    }
+
     public static ArrayList<Ticket> readTicketFromFile(String file) throws IOException, ClassNotFoundException {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
         ArrayList<Ticket> ticketList = (ArrayList<Ticket>) ois.readObject();
@@ -250,7 +248,7 @@ public class MovieTheatreGUI extends JFrame {
         ArrayList<Movie> movies = new ArrayList<>();
         Scanner scanner = new Scanner(new File(filePath));
         int x = 0;
-        while (scanner.hasNextLine() && x < 1) {
+        while (scanner.hasNextLine() && x <= 2) {
             String line = scanner.nextLine();
             String[] details = line.split(",");
 
