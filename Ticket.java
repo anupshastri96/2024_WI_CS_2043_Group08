@@ -29,6 +29,8 @@ public class Ticket implements Serializable {
                 ", airingTime='" + movie.getAiringTime() + '\'' +
                 ", Theatre Room Number: " + room.getRoomNum() +
                 ", Seat Number: " + getSeatNum() +
+                ", Ticket Type=" + getTicketType() +
+                ", Price=$" + getPrice() +
                 '}';
     }
 }
