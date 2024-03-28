@@ -155,13 +155,15 @@ public class MovieTheatreGUI extends JFrame {
             for (int j = 0; j < seats[i].length; j++) {
                 if (seats[i][j].getBackground() == Color.RED) {
                     seatSelected = true;
-                    break;
+                    Ticket ticket = new Ticket(movieList.get(selectedMovieIndex), new TheatreRoom(movieList.get(selectedMovieIndex), 1),ages[selectedAgeIndex],(i * 4 + j + 1), selectedPrice);
+					tickets.add(ticket); // Create and add a Ticket for the selected seat
                 }
             }
         }
 
         if (seatSelected) {
             JOptionPane.showMessageDialog(this, "Booking confirmed! Price: $" + selectedPrice);
+			 writeTicket(tickets, "ticketFile.txt");
         } else {
             JOptionPane.showMessageDialog(this, "Please select a seat before confirming the booking.");
         }
@@ -229,13 +231,16 @@ public class MovieTheatreGUI extends JFrame {
         }
     }
 
-    private static void writeTicket(ArrayList<Ticket> tickets) {
-        try {
-            ObjectOutputStream bw = new ObjectOutputStream(new FileOutputStream("ticketFile.txt"));
-            bw.writeObject(tickets);
-        } catch (Exception e) {
-        }
-    }
+    private void writeTicket(ArrayList<Ticket> tickets, String filename) {
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename))) {
+			for (Ticket ticket : tickets) {
+				bw.write(ticket.toString());
+				bw.newLine();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
     public static ArrayList<Ticket> readTicketFromFile(String file) throws IOException, ClassNotFoundException {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
@@ -248,15 +253,15 @@ public class MovieTheatreGUI extends JFrame {
         ArrayList<Movie> movies = new ArrayList<>();
         Scanner scanner = new Scanner(new File(filePath));
         int x = 0;
-        while (scanner.hasNextLine() && x <= 2) {
+        while (scanner.hasNextLine() && x <=2) {
             String line = scanner.nextLine();
             String[] details = line.split(",");
 
             if (details.length == 4) { // Check if the split line has exactly four elements: name, duration, airtime,
                                        // and rating
                 String name = details[0];// Extract the movie name from the first element
-                String duration = details[1];// Extract the movie duration from the second element
-                String airtime = details[2];// Extract the movie airtime from the third element.
+				String airtime = details[1];// Extract the movie airtime from the second element.
+                String duration = details[2];// Extract the movie duration from the third element
                 double rating = Double.parseDouble(details[3]);// Convert the fourth element from String to double for
                                                                // the rating
                 movies.add(new Movie(name, airtime, duration, rating)); // Create a new Movie object and add it to the
