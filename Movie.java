@@ -47,7 +47,7 @@ public class Movie implements Serializable, Comparable<Movie> {
 
     /*
      * public static void main(String[] args) {
-     * Movie myMovie = new Movie("Interstellar", 169, 4, "09:00 PM");
+     * Movie myMovie = new Movie("Interstellar", "09:00 PM", "169", 4);
      * System.out.println(myMovie.toString());
      * }
      */
