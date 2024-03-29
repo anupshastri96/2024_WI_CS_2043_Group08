@@ -1,4 +1,3 @@
-
 import java.io.*;
 
 public class Movie implements Serializable, Comparable<Movie> {

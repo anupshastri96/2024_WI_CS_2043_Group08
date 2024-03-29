@@ -4,25 +4,44 @@ public class Ticket implements Serializable {
     private Movie movie;
     private TheatreRoom room;
     private int seatNum;
+    private double price;
+    private int seatRow;
+    private int seatCol;
 
-    public Ticket(Movie movie, TheatreRoom room, int seatNum) {
+    public Ticket(Movie movie, TheatreRoom room, int seatRow, int seatCol, double price) {
         this.movie = movie;
         this.room = room;
-        this.seatNum = seatNum;
+        this.price = price;
+        this.seatCol = seatCol;
+        this.seatRow = seatRow;
     }
 
     public int getSeatNum() {
         return seatNum;
     }
 
+    public double getPrice() {
+        return price;
+    }
+
+    public int getSeatRow() {
+        return seatRow;
+    }
+
+    public int getSeatCol() {
+        return seatCol;
+    }
+
     public String toString() {
-        return "Movie{" +
+        return "Ticket{" +
                 "name='" + movie.getName() + '\'' +
                 ", duration=" + movie.getDuration() +
                 ", rating=" + movie.getRating() +
                 ", airingTime='" + movie.getAiringTime() + '\'' +
                 ", Theatre Room Number: " + room.getRoomNum() +
-                ", Seat Number: " + getSeatNum() +
+                ", Seat Row: " + getSeatRow() +
+                ", Seat Column: " + getSeatCol() +
+                ", Price: " + getPrice() +
                 '}';
     }
 }
