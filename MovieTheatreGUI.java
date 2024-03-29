@@ -1,8 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowListener;
-import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,6 +13,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Map;
+import java.util.HashMap;
 
 public class MovieTheatreGUI extends JFrame {
     private JButton[] movieButtons;
@@ -32,13 +31,11 @@ public class MovieTheatreGUI extends JFrame {
     ArrayList<Movie> movieList;
     private ArrayList<Ticket> tickets = new ArrayList<>();
 
-    // private String[] ages = { "Senior", "Child", "Adult" };
-    // private double[][] prices = { { 10.0, 9.0, 13.0 }, { 10.0, 9.0, 13.0 }, {
-    // 10.0, 9.0, 13.0 } };
+    private Map<Movie, TheatreRoom> newRoomsForMovies = new HashMap<>();
 
     private double price = 10.0;
     private int selectedMovieIndex = -1;
-    // private int selectedAgeIndex = -1;
+
     private String seatFile = "stateOfSeats.txt";
     private String ticketFile = "ticketFile.txt";
 
@@ -71,10 +68,11 @@ public class MovieTheatreGUI extends JFrame {
             button.addActionListener(e -> selectMovie(index));
             movieButtons[i] = button;
             moviePanel.add(button);
+            newTheatreRooms();
+
         }
 
         topPanel.add(moviePanel);
-        // topPanel.add(agePanel);
         JPanel seatsPanel = new JPanel(new GridLayout(3, 4));
         seats = new JButton[3][4];
         for (int i = 0; i < 3; i++) {
@@ -106,15 +104,16 @@ public class MovieTheatreGUI extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        restoreSeats();
+        restoreSeatsForMovie1(selectedMovieIndex);
+    }
 
-        this.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                saveSeats(seatFile);
-            }
-        });
-        this.setVisible(true);
+    private void newTheatreRooms() {
+        int roomNum = 1; // first theatre room
 
+        for (Movie m : movieList) {
+            TheatreRoom room = new TheatreRoom(m, roomNum++);
+            newRoomsForMovies.put(m, room);
+        }
     }
 
     private void viewBooking() {
@@ -125,15 +124,16 @@ public class MovieTheatreGUI extends JFrame {
         bookingTextArea.setText(sb.toString());
 
         JOptionPane.showMessageDialog(null, sb.toString(), "Ticket List", JOptionPane.INFORMATION_MESSAGE);
-
-        try {
-            String index = JOptionPane.showInputDialog("Enter Ticket you would like to cancel");
-            if (index != null && !index.isEmpty()) {
-                int removing = Integer.parseInt(index);
-                removeTicket(removing);
+        if (!tickets.isEmpty()) {
+            try {
+                String index = JOptionPane.showInputDialog("Enter Ticket you would like to cancel");
+                if (index != null && !index.isEmpty()) {
+                    int removing = Integer.parseInt(index);
+                    removeTicket(removing);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Something went wrong, please try again :(");
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Something went wrong, please try again :(");
         }
     }
 
@@ -144,6 +144,7 @@ public class MovieTheatreGUI extends JFrame {
             int column = removedTicket.getSeatCol(); // Or calculate based on seatNum
             seats[row][column].setBackground(null);
             JOptionPane.showMessageDialog(this, "Ticket Cancelled Successfully");
+            writeTicket(tickets, "ticketFile.txt");
         } else {
             JOptionPane.showMessageDialog(this, "Ticket does not exist.", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -151,7 +152,22 @@ public class MovieTheatreGUI extends JFrame {
 
     private void selectMovie(int index) {
         selectedMovieIndex = index;
+        for (int i = 0; i < seats.length; i++) {
+            for (int j = 0; j < seats[i].length; j++) {
+                if (index == 0) {
+                    restoreSeatsForMovie1(index);
+                }
+                if (index == 1) {
+                    restoreSeatsForMovie2(index);
+                }
+                if (index == 2) {
+                    restoreSeatsForMovie3(index);
+                }
+            }
+
+        }
         updatePrice();
+
     }
 
     private void updatePrice() {
@@ -176,14 +192,35 @@ public class MovieTheatreGUI extends JFrame {
     }
 
     private void confirmBooking() {
+
+        Movie movie = movieList.get(selectedMovieIndex);
+        TheatreRoom newRoom = newRoomsForMovies.get(movie);
+
         boolean seatSelected = false;
         for (int i = 0; i < seats.length; i++) {
             for (int j = 0; j < seats[i].length; j++) {
                 if (seats[i][j].getBackground() == Color.RED) {
                     seatSelected = true;
-                    Ticket ticket = new Ticket(movieList.get(selectedMovieIndex),
-                            new TheatreRoom(movieList.get(selectedMovieIndex), 1), i, j, price);
+                    Ticket ticket = new Ticket(movie, newRoom, i, j, price);
                     tickets.add(ticket); // Create and add a Ticket for the selected seat
+                    if (selectedMovieIndex == 0) {
+                        saveSeats("MovieOne.txt");
+
+                    }
+                    if (selectedMovieIndex == 1) {
+                        saveSeats("MovieTwo.txt");
+
+                    }
+                    if (selectedMovieIndex == 2) {
+                        saveSeats("MovieTwo.txt");
+                    }
+                    try (BufferedWriter bw = new BufferedWriter(new FileWriter("ListOfTickets.txt"))) {
+                        bw.write(ticket.toString());
+                        bw.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 }
             }
         }
@@ -215,30 +252,56 @@ public class MovieTheatreGUI extends JFrame {
     private void saveSeats(String file) {
         try {
             BufferedWriter saveSeatInfo = new BufferedWriter(new FileWriter(file));
+            BufferedWriter saveSeatInfo2 = new BufferedWriter(new FileWriter("MovieTwo.txt"));
+            BufferedWriter saveSeatInfo3 = new BufferedWriter(new FileWriter("MovieThree.txt"));
+
             for (int i = 0; i < seats.length; i++) {
                 for (int j = 0; j < seats[i].length; j++) {
                     if (Color.RED.equals(seats[i][j].getBackground())) {
-                        saveSeatInfo.write("[O]");
-                        saveSeatInfo.newLine();
+                        if (selectedMovieIndex == 0) {
+                            saveSeatInfo.write("[O]");
+                            saveSeatInfo.newLine();
+
+                        }
+                        if (selectedMovieIndex == 1) {
+                            saveSeatInfo2.write("[O]");
+                            saveSeatInfo2.newLine();
+
+                        }
+                        if (selectedMovieIndex == 2) {
+                            saveSeatInfo3.write("[O]");
+                            saveSeatInfo3.newLine();
+
+                        }
+
                     }
 
                     else {
                         saveSeatInfo.write("[V]");
                         saveSeatInfo.newLine();
+                        saveSeatInfo2.write("[V]");
+                        saveSeatInfo2.newLine();
+                        saveSeatInfo3.write("[V]");
+                        saveSeatInfo3.newLine();
                     }
                 }
             }
 
             saveSeatInfo.flush();
             saveSeatInfo.close();
+            saveSeatInfo2.flush();
+            saveSeatInfo2.close();
+            saveSeatInfo3.flush();
+            saveSeatInfo3.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void restoreSeats() {
+    private void restoreSeatsForMovie1(int movie) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(seatFile));
+
             String line;
             int i = 0;
             while ((line = br.readLine()) != null && i < seats.length * seats[0].length) {
@@ -250,6 +313,7 @@ public class MovieTheatreGUI extends JFrame {
                     seats[r][c].setBackground(null);
                 }
                 i++;
+
             }
             br.close();
 
@@ -258,22 +322,70 @@ public class MovieTheatreGUI extends JFrame {
         }
     }
 
-    private void writeTicket(ArrayList<Ticket> tickets, String filename) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename))) {
-            for (Ticket ticket : tickets) {
-                bw.write(ticket.toString());
-                bw.newLine();
+    private void restoreSeatsForMovie2(int movie) {
+        try {
+            BufferedReader br2 = new BufferedReader(new FileReader("MovieTwo.txt"));
+
+            String line;
+            int i = 0;
+            while ((line = br2.readLine()) != null && i < seats.length * seats[0].length) {
+                int r = i / seats[0].length; // row = i / number of columns
+                int c = i % seats[0].length; // columns = remainder of when i / columns
+                if (line.equals("[O]")) {
+                    seats[r][c].setBackground(Color.RED);
+                } else if (line.equals("[V]")) {
+                    seats[r][c].setBackground(null);
+                }
+                i++;
+
             }
+            br2.close();
+
+        } catch (Exception e) {
+
+        }
+    }
+
+    private void restoreSeatsForMovie3(int movie) {
+        try {
+            BufferedReader br3 = new BufferedReader(new FileReader("MovieThree.txt"));
+
+            String line;
+            int i = 0;
+            while ((line = br3.readLine()) != null && i < seats.length * seats[0].length) {
+                int r = i / seats[0].length; // row = i / number of columns
+                int c = i % seats[0].length; // columns = remainder of when i / columns
+                if (line.equals("[O]")) {
+                    seats[r][c].setBackground(Color.RED);
+                } else if (line.equals("[V]")) {
+                    seats[r][c].setBackground(null);
+                }
+                i++;
+
+            }
+            br3.close();
+
+        } catch (Exception e) {
+
+        }
+    }
+
+    private void writeTicket(ArrayList<Ticket> tickets, String filename) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+            oos.writeObject(tickets);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static ArrayList<Ticket> readTicketFromFile(String file) throws IOException, ClassNotFoundException {
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
-        ArrayList<Ticket> ticketList = (ArrayList<Ticket>) ois.readObject();
-        ois.close();
-        return ticketList;
+        File f = new File(file);
+        if (!f.exists() || f.length() == 0) {
+            return new ArrayList<>(); // Return an empty list if the file doesn't exist or is empty
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            return (ArrayList<Ticket>) ois.readObject();
+        }
     }
 
     public static ArrayList<Movie> readMoviesFromFile(String filePath) throws FileNotFoundException {
@@ -300,30 +412,6 @@ public class MovieTheatreGUI extends JFrame {
         scanner.close(); // closes the scanner
         return movies;
     }
-    /*
-     * private void seatSelect(int row, int col) {
-     * JOptionPane.showMessageDialog(this,
-     * "You have selected Seat " + (row * 4 + col + 1) + ". Price: $" +
-     * selectedPrice);
-     * }
-     * 
-     * 
-     * 
-     * private void confirmBook() {
-     * JOptionPane.showMessageDialog(this, "Booking confirmed!");
-     * }
-     * 
-     * 
-     * 
-     * private void cancelBook() {
-     * int choice = JOptionPane.showConfirmDialog(this,
-     * "Are you sure you want to cancel the booking?",
-     * "Cancel Booking", JOptionPane.YES_NO_OPTION);
-     * if (choice == JOptionPane.YES_OPTION) {
-     * JOptionPane.showMessageDialog(this, "Booking canceled!");
-     * }
-     * }
-     */
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {

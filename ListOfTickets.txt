@@ -1,0 +1,1 @@
+Ticket{name='KungFuPanda4', duration=1h34m, rating=3.0, airingTime='19:40', Theatre Room Number: 3, Seat Row: 0, Seat Column: 2, Price: 10.0}
