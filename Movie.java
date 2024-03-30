@@ -1,80 +1,54 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
 
-public class Movie implements Comparable<Movie> {
-    private final String title;
-    private final List<Integer> ratings;
+public class Movie implements Serializable, Comparable<Movie> {
+    private String name;
+    private String duration;
+    private double rating;
+    private String airingTime;
 
-    public Movie(String title) {
-        this.title = title;
-        this.ratings = new ArrayList<>();
-    }
-	
-	public String getTitle() {
-        return title;
-    }
-
-    public void addRating(int rating) {
-        if (isValidRating(rating)) {
-            ratings.add(rating);
-        } 
-		else {
-            System.out.println("Invalid rating. Ratings must be integers between 0 and 5 inclusive.");
-        }
+    public Movie(String name, String airingTime, String duration, double rating) {
+        this.name = name;
+        this.airingTime = airingTime;
+        this.duration = duration;
+        this.rating = rating;
     }
 
-    public void clearRatings() {
-        ratings.clear();
+    public String getName() {
+        return name;
     }
 
-    public Double getAverageRating() {
-        if (ratings.isEmpty()) {
-            return null;
-        }
-        int sum = 0;
-		for (int i = 0; i < ratings.size(); i++) {
-		   sum += ratings.get(i);
+    public String getDuration() {
+        return duration;
     }
 
-    return (double) sum / ratings.size();
-	}
-
-    private boolean isValidRating(int rating) {
-        return rating >= 0 && rating <= 5;
-    }
-	
-	@Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-
-        Movie movie = (Movie) obj;
-        return title.equals(movie.title);
+    public double getRating() {
+        return rating;
     }
 
+    public String getAiringTime() {
+        return airingTime;
+    }
 
-	@Override
-	public int compareTo(Movie other) {
-		Double otherRating = other.getAverageRating();
-		Double thisRating = this.getAverageRating();
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "name='" + name + '\'' +
+                ", duration=" + duration +
+                ", rating=" + rating +
+                ", airingTime='" + airingTime + '\'' +
+                '}';
+    }
 
-		if (otherRating == null && thisRating == null) {
-			return 0; 
-		} else if (otherRating == null) {
-			return -1; 
-		} else if (thisRating == null) {
-			return 1; 
-		} else {
-			return Double.compare(otherRating, thisRating);
-		}
-	}
-	
-	public String toString() {
-	    return "Movie{" +"title='" + title + '\'' +", ratings=" + ratings +", averageRating=" + getAverageRating() +'}';
-	}
+    // CompareTo method to compare movies based on their rating
+    @Override
+    public int compareTo(Movie other) {
+        return Double.compare(this.rating, other.rating);
+    }
 
-
-
-
+    /*
+     * public static void main(String[] args) {
+     * Movie myMovie = new Movie("Interstellar", 169, 4, "09:00 PM");
+     * System.out.println(myMovie.toString());
+     * }
+     */
 }
-

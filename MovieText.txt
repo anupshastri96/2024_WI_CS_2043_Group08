@@ -1,0 +1,10 @@
+GhostBusters,15:00,2h30m,4
+Migration,17:00,1h31m,5
+KungFuPanda4,19:40,1h34m,3
+Wonka,14:30,1h56m,4
+DemonSlayer,17:30,2h10m,3
+MadameWeb,18:00,1h54m,3
+Argylle,18:30,2h19m,5
+WinnieThePooh,19:00,1h35m,4
+Hop,19:30,1h35m,5
+MarioBros,10:00,1h45m,4
