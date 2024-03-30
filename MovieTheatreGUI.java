@@ -80,11 +80,8 @@ public class MovieTheatreGUI extends JFrame {
         bookingTextArea = new JTextArea(10, 30);
         inputTextForCancel = new JTextField("Please enter your ticket number.");
         JPanel bottomPanel = new JPanel();
-        // viewButton = new JButton("View Booking");
-        // viewButton.addActionListener(e -> viewBooking());
-        // bottomPanel.add(viewButton);
+
         add(topPanel, BorderLayout.NORTH);
-        // add(seatsPanel, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
         pack();
         setLocationRelativeTo(null);
